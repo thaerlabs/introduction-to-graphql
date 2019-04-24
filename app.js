@@ -1,13 +1,25 @@
 const { GraphQLServer } = require('graphql-yoga')
+const find = require('lodash/find');
+const movies = require('./data/movies');
 
 const typeDefs = `
-  type Query {
-    hello(name: String): String!
-  }
+type Movie {
+  id: String
+  name: String
+  releaseDate: String
+}
+
+type Query {
+  movies: [Movie]
+  movie(id: Int): Movie
+}
 `
 const resolvers = {
   Query: {
-    hello: (_, { name }) => `Hello ${name || 'World'}`,
+    movies: () => movies,
+    movie: (_, args) => find(movies, {
+      id: args.id
+    })
   },
 }
 
