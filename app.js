@@ -9,9 +9,18 @@ type Movie {
   releaseDate: String
 }
 
+input CreateMovieInput {
+  name: String
+  releaseDate: String
+}
+
 type Query {
   movies: [Movie]
   movie(id: Int): Movie
+}
+
+type Mutation {
+  createMovie(input: CreateMovieInput): Movie
 }
 `
 const resolvers = {
@@ -21,6 +30,18 @@ const resolvers = {
       id: args.id
     })
   },
+  Mutation: {
+    createMovie: (_, args) => {
+      const movie = {
+        id: movies.length + 1,
+        ...args.input
+      };
+
+      movies.push(movie);
+
+      return movie;
+    }
+  }
 }
 
 const server = new GraphQLServer({ typeDefs, resolvers })
